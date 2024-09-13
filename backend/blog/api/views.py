@@ -156,17 +156,22 @@ class ProfileDeleteView(APIView):
 class ProfileUpdateView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    parser_classes=[MultiPartParser,FormParser]
+    parser_classes = [MultiPartParser, FormParser]
 
     def patch(self, request):
         try:
             user_profile = UserProfile.objects.get(user=request.user)
-            print(request.data)
-            print(user_profile)
         except UserProfile.DoesNotExist:
             return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = UserProfileSerializer(user_profile, data=request.data, partial=True)
+
+        # Extract user data from the request
+        user_data = {
+            'email': request.data.get('email', ''),
+            'first_name': request.data.get('first_name', ''),
+            'last_name': request.data.get('last_name', '')
+        }
+        user = user_profile.user
+        serializer = UserSerializer(user, data=user_data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -183,3 +188,7 @@ class UserProfileView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except UserProfile.DoesNotExist:
             return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+

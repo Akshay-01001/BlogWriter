@@ -48,8 +48,8 @@ const Comment = () => {
       );
       if (response.status === 201) {
         alert("Comment added successfully");
-        setComment(""); // Clear the textarea
-        fetchComments(); // Refresh the comments list
+        setComment("");
+        fetchComments();
       } else {
         setError("Failed to add Comment");
       }

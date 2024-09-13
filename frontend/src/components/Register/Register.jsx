@@ -11,6 +11,8 @@ const Register = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const [error, setError] = useState("");
+  const [firstName,setFirstName] = useState("");
+  const [lastname,setLastName] = useState("");
   const navigate = useNavigate()
 
 
@@ -26,6 +28,8 @@ const Register = () => {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("profile_pic", profilePic);
+    formData.append("first_name", firstName);
+    formData.append("last_name", lastname);
 
     try {
       await axios.post("http://127.0.0.1:8000/api/register/", formData, {
@@ -75,6 +79,28 @@ const Register = () => {
               placeholder="email"
               name="email"
               onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+
+          <label htmlFor="firstname" className="block">
+            <input
+              required
+              type="text"
+              className="border border-gray-300 w-full p-3 rounded-lg bg-gray-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white"
+              placeholder="first name"
+              name="firstname"
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </label>
+
+          <label htmlFor="lastname" className="block">
+            <input
+              required
+              type="text"
+              className="border border-gray-300 w-full p-3 rounded-lg bg-gray-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white"
+              placeholder="lastname"
+              name="lastname"
+              onChange={(e) => setLastName(e.target.value)}
             />
           </label>
           

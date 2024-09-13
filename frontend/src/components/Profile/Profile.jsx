@@ -6,11 +6,12 @@ const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData1, setFormData] = useState({
+  const [formData, setFormData] = useState({
     email: "",
     first_name: "",
     last_name: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -18,78 +19,70 @@ const Profile = () => {
         const token = localStorage.getItem("authToken");
         const response = await axios.get("http://127.0.0.1:8000/api/profile/", {
           headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json',
           },
         });
         setUserData(response.data);
-        console.log(response.data);
         setFormData({
-          first_name: response.data.user.first_name || "",
-          last_name: response.data.user.last_name || "",
-          email: response.data.user.email || "",
+          email: response.data.user.email,
+          first_name: response.data.user.first_name,
+          last_name: response.data.user.last_name,
         });
       } catch (error) {
-        setError("Failed to fetch user data.");
-        console.log(error.message);
+        console.log("Failed to fetch user data:", error.message);
+        setUserData(null);
+        setError("Failed to load user data");
       }
     };
-
     fetchUserData();
   }, []);
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData1,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const form = new FormData()
-    form.append('email',formData1.email)
-    form.append('first_name',formData1.first_name)
-    form.append('last_name',formData1.last_name)
+    setLoading(true);
+
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append('email', formData.email);
+    formDataToSubmit.append('first_name', formData.first_name);
+    formDataToSubmit.append('last_name', formData.last_name);
 
     try {
       const token = localStorage.getItem("authToken");
-
       const response = await axios.patch(
         "http://127.0.0.1:8000/api/profile/update/",
-        form,
+        formDataToSubmit,
         {
           headers: {
-            Authorization: `Token ${token}`,
-            // "Content-Type": "application/json",
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'multipart/form-data', 
           },
         }
       );
-      console.log(response.data);
-      setUserData({
-        ...userData,
-        user: {
-          ...userData.user,
-          first_name: formData1.first_name,
-          last_name: formData1.last_name,
-          email: formData1.email,
-        },
-      });
       setIsEditing(false);
+    
     } catch (error) {
-      console.log(error.message);
-
-      setError("Failed to edit Profile");
-      console.log(error.message);
+      console.log("Failed to update profile:", error.message);
+      setError("Failed to update profile");
+    } finally {
+      setLoading(false);
     }
   };
 
   if (error) {
-    return <div>{error}</div>; // Display error message
+    return <div>{error}</div>;
   }
 
   if (!userData) {
-    return <div>Loading...</div>; // Show a loading indicator or message
+    return <div>Loading...</div>;
   }
 
   return (
@@ -104,46 +97,34 @@ const Profile = () => {
       )}
       {!isEditing ? (
         <>
-          <table className="min-w-full ">
+          <table className="min-w-full">
             <thead>
               <tr>
-                <th className="px-4 py-2 text-left border border-black">
-                  Field
-                </th>
-                <th className="px-4 py-2 text-left border border-black">
-                  Value
-                </th>
+                <th className="px-4 py-2 text-left border border-black">Field</th>
+                <th className="px-4 py-2 text-left border border-black">Value</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td className="px-4 py-2 border border-black">Username</td>
-                <td className="px-4 py-2 border border-black">
-                  {userData.user.username}
-                </td>
+                <td className="px-4 py-2 border border-black">{userData.user.username || "NA"}</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border border-black">Email</td>
-                <td className="px-4 py-2 border border-black">
-                  {userData.user.email}
-                </td>
+                <td className="px-4 py-2 border border-black">{userData.user.email}</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border border-black">Firstname</td>
-                <td className="px-4 py-2 border border-black">
-                  {userData.user.first_name || "Not set yet"}
-                </td>
+                <td className="px-4 py-2 border border-black">{userData.user.first_name || "Not set yet"}</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border border-black">Lastname</td>
-                <td className="px-4 py-2 border border-black">
-                  {userData.user.last_name || "Not set yet"}
-                </td>
+                <td className="px-4 py-2 border border-black">{userData.user.last_name || "Not set yet"}</td>
               </tr>
             </tbody>
           </table>
           <button
-            className="flex  gap-x-2 mt-8 mx-auto border border-black px-6 py-2 text-center hover:shadow-[7px_-7px_0px_#000000]"
+            className="flex gap-x-2 mt-8 mx-auto border border-black px-6 py-2 text-center hover:shadow-[7px_-7px_0px_#000000]"
             onClick={() => setIsEditing(true)}
           >
             <img src={assets.blog_icon} alt="" className="h-6" />
@@ -152,7 +133,6 @@ const Profile = () => {
         </>
       ) : (
         <form
-          action=""
           onSubmit={handleFormSubmit}
           className="flex flex-col items-start gap-4 mx-10"
         >
@@ -161,45 +141,46 @@ const Profile = () => {
             <input
               type="text"
               name="first_name"
-              value={formData1.first_name}
+              value={formData.first_name}
               onChange={handleInputChange}
               className="border border-black px-2 py-1"
-              placeholder="enter here"
+              placeholder="Enter here"
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="last_name">Last Name : </label>
+            <label htmlFor="last_name">Last Name:</label>
             <input
               type="text"
               name="last_name"
-              value={formData1.last_name}
+              value={formData.last_name}
               onChange={handleInputChange}
               className="border border-black px-2 py-1"
-              placeholder="enter here"
+              placeholder="Enter here"
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="email">Email : </label>
+            <label htmlFor="email">Email:</label>
             <input
-              type="text"
+              type="email"
               name="email"
-              value={formData1.email}
+              value={formData.email}
               onChange={handleInputChange}
               className="border border-black px-2 py-1"
-              placeholder="enter here"
+              placeholder="Enter here"
             />
           </div>
 
           <div className="flex flex-row gap-2">
             <button
               type="submit"
-              className="flex  gap-x-2  border border-black px-4 py-2 text-center hover:shadow-[7px_-7px_0px_#000000] bg-gray-500"
+              className="flex gap-x-2 border border-black px-4 py-2 text-center hover:shadow-[7px_-7px_0px_#000000] bg-gray-500"
+              disabled={loading}
             >
-              Save
+              {loading ? "Saving..." : "Save"}
             </button>
             <button
               type="button"
-              className="flex  gap-x-2  border border-black px-4 py-2 text-center hover:shadow-[7px_-7px_0px_#000000] bg-gray-500"
+              className="flex gap-x-2 border border-black px-4 py-2 text-center hover:shadow-[7px_-7px_0px_#000000] bg-gray-500"
               onClick={() => setIsEditing(false)}
             >
               Cancel

@@ -10,7 +10,7 @@ const AddBlog = () => {
   const [category, setCategory] = useState("");
   const [error, setError] = useState("");
   const editor = useRef(null);
-  const [desc,setDesc] = useState("")
+  const [desc, setDesc] = useState("");
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -20,12 +20,12 @@ const AddBlog = () => {
     formData.append("thumbnail", image);
     formData.append("content", content);
     formData.append("category", category);
-    formData.append("description",desc)
+    formData.append("description", desc);
 
     try {
       const token = localStorage.getItem("authToken");
       console.log(token);
-      
+
       const response = await axios.post(
         "http://127.0.0.1:8000/api/blogs/create/",
         formData,
@@ -79,7 +79,7 @@ const AddBlog = () => {
       />
 
       <p className="text-xl mt-4">Blog Description</p>
-       <textarea
+      <textarea
         rows={4}
         className="w-full sm:w-[500px] mt-4 px-4 py-3 border h-48"
         placeholder="Write Content Here"
