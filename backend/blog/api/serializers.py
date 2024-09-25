@@ -32,37 +32,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('profile_pic', 'user')
-
-    # def update(self,instance,validated_data):
-    #     print(validated_data,"validated data")
-    #     print(instance,"instance")
-    #     user_data = {
-    #         'email'  : "",
-    #         'first_name':"",
-    #         'last_name':""
-            
-    #     }
-    #     if 'email' in validated_data:
-    #         user_data['email'] = validated_data.pop('email')
-    #     if 'first_name' in validated_data:
-    #         user_data['first_name'] = validated_data.pop('first_name')
-    #     if 'last_name' in validated_data:
-    #         user_data['last_name'] = validated_data.pop('last_name')
-        
-    #     print(user_data,"serializer")
-    #     if user_data:
-    #         user_serializer = UserSerializer(instance.user, data=user_data, partial=True)
-    #         if user_serializer.is_valid():
-    #             user_serializer.save()
-    #         else:
-    #             raise serializers.ValidationError(user_serializer.errors)
-    
-    #     profile_pic = validated_data.get('profile_pic', None)
-    #     if profile_pic:
-    #         instance.profile_pic = profile_pic
-    #     instance.save()
-        
-    #     return instance
     
     
 class BlogPostSerializer(serializers.ModelSerializer):

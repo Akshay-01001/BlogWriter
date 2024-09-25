@@ -20,6 +20,23 @@ const UserBlogs = () => {
     }
   };
 
+  const deleteBlog = async(id)=>{{
+    try {
+      const response = await axios.delete(`http://127.0.0.1:8000/api/blogs/${id}/delete/`,{
+        headers:{
+          Authorization:`Token ${localStorage.getItem("authToken")}`,
+        }
+      })
+      if(response.status === 204){
+        fetchBlogs()
+        alert("Blog deleted successfully");
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }}
+
   useEffect(() => {
     fetchBlogs();
   }, []);
@@ -55,10 +72,12 @@ const UserBlogs = () => {
                     {new Date(blog.created_at).toLocaleString()}
                   </td>
                   <td className="sm:px-5 px-1 py-2">
-                    <button className="bg-blue-500 text-white px-3 py-1 rounded mx-2">
+                    <button className="bg-blue-500 text-white px-3 py-1 rounded mx-2" 
+                    onClick={() => window.location.href = `/blogs/${blog.id}`}>
                       View
                     </button>
-                    <button className="bg-blue-500 text-white px-3 py-1 rounded">
+                    <button className="bg-blue-500 text-white px-3 py-1 rounded"
+                    onClick={() => deleteBlog(blog.id)}>
                       Delete
                     </button>
                   </td>

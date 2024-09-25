@@ -8,7 +8,6 @@ class UserProfile(models.Model):
     
     def __str__(self):
         return self.user.username
-    
 
 class BlogPost(models.Model):
     title = models.CharField(max_length=255)

@@ -4,27 +4,30 @@ import axios from "axios"; // Import axios if not already imported
 import { assets } from "../../assets/assets";
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://127.0.0.1:8000/api/profile/", {
-          headers: {
-            'Authorization': `Token ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        setUser(response.data);
-      } catch (error) {
-        console.log("Failed to fetch user data:", error.message);
-        setUser(null);
+    // const fetchUserData = async () => {
+    //   try {
+    //     const token = localStorage.getItem("authToken");
+    //     const response = await axios.get("http://127.0.0.1:8000/api/profile/", {
+    //       headers: {
+    //         'Authorization': `Token ${token}`,
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+    //     setUser(response.data);
+    //   } catch (error) {
+    //     console.log("Failed to fetch user data:", error.message);
+    //     setUser(null);
         
-      }
-    };
+    //   }
+    // };
   
-    fetchUserData();
+    // fetchUserData();
+    const token = localStorage.getItem("authToken");
+    setToken(token);
   }, []);
   
   return (
@@ -34,8 +37,8 @@ const Navbar = () => {
           <img src={assets.logo} alt="Logo" />
         </Link>
 
-        {user ? (
-          <Link to="/userpanel">
+        {token ? (
+          <Link to="/userpanel/add-blog">
             <button className="flex items-center gap-2 font-medium py-1 px-3 sm:py-3 sm:px-6 border border-black shadow-[-7px_7px_0px_#000000]">
               User Panel
             </button>

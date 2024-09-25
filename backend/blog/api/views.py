@@ -29,10 +29,14 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
+        print("hello")
+        print(request.data)
         username = request.data.get('username')
         password = request.data.get('password')
-        
+        print(username)
+        print(password)
         user = authenticate(username=username, password=password)
+        print(user)
         if user is not None:
             django_login(request, user)
             token, created = Token.objects.get_or_create(user=user)
@@ -67,6 +71,7 @@ class BlogPostListView(APIView):
 
     def get(self, request):
         blogs = BlogPost.objects.all()
+        print(blogs)
         serializer = BlogPostSerializer(blogs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -188,7 +193,3 @@ class UserProfileView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except UserProfile.DoesNotExist:
             return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-
-
-
-
