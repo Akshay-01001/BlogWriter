@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.urls import path,include
-from .views import RegisterView,LoginView,LogoutView,BlogPostCreateView,BlogPostListView,UserBlogPostListView,BlogPostView,BlogPostDeleteView,CommentCreateView,CommentListView,ProfileDeleteView,ProfileUpdateView,UserProfileView,CommentDeleteView
+from .views import RegisterView,LoginView,LogoutView,BlogPostCreateView,BlogPostListView,UserBlogPostListView,BlogPostView,BlogPostDeleteView,CommentCreateView,CommentListView,ProfileDeleteView,ProfileUpdateView,UserProfileView
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
@@ -15,7 +15,7 @@ urlpatterns = [
     path('blogs/<int:pk>/delete/', BlogPostDeleteView.as_view(), name='blog-delete'), 
     path('blogs/create/', BlogPostCreateView.as_view(), name='blog-create'),  
     path('blogs/<int:post_id>/comments/', CommentListView.as_view(), name='comment-list'), 
-    path('blogs/<int:post_id>/comments/<int:comment_id>/delete/', CommentDeleteView.as_view(), name='comment-delete'),  
+    # path('blogs/<int:post_id>/comments/<int:comment_id>/delete/', CommentDeleteView.as_view(), name='comment-delete'),  
     path('blogs/<int:post_id>/comments/create/', CommentCreateView.as_view(), name='comment-create'),  
     path('profile/delete/', ProfileDeleteView.as_view(), name='profile-delete'),
     path('profile/update/', ProfileUpdateView.as_view(), name='profile-update'), 

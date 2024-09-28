@@ -62,7 +62,7 @@ const BlogList = () => {
           }
         >
           Lifestyle
-        </button>
+        </button>   
       </div>
 
       <div className="flex flex-wrap justify-around gap-1 gap-y-7 mb-16 xl:mx-24">

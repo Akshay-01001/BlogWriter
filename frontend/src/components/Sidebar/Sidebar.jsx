@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets";
-import logout from "../../utils/auth";
+// import logout from "../../utils/auth";
+import axios from "axios";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -10,8 +11,21 @@ const Sidebar = () => {
     try {
       const res = confirm("are you sure you want to logout?");
       if(!res) return
-      await logout();
-      navigate("/");
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/logout/",
+        {},
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("authToken")}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if(response.status === 200){
+        localStorage.removeItem("authToken");
+        alert("logged out successfully")
+        navigate("/")
+      }
     } catch (error) {
       alert(error.message);
     }

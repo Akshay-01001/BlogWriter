@@ -7,7 +7,7 @@ const AddBlog = () => {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Technology");
   const [error, setError] = useState("");
   const editor = useRef(null);
   const [desc, setDesc] = useState("");
@@ -39,6 +39,7 @@ const AddBlog = () => {
 
       if (response.status === 201) {
         alert("Blog added successfully");
+        window.location.reload();
       } else {
         setError("Failed to add blog");
       }

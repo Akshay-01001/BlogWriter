@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { assets } from "../../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate()
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -20,7 +22,7 @@ const Profile = () => {
         const response = await axios.get("http://127.0.0.1:8000/api/profile/", {
           headers: {
             'Authorization': `Token ${token}`,
-            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/json',
           },
         });
         setUserData(response.data);
@@ -37,6 +39,29 @@ const Profile = () => {
     };
     fetchUserData();
   }, []);
+
+  const deletProfile = async ()=>{
+    try {
+      const res = confirm("are you sure you want to delete your profile?");
+      if(!res) return
+      const token = localStorage.getItem("authToken");
+      const response = await axios.delete("http://127.0.0.1:8000/api/profile/delete/", {
+        headers: {
+          'Authorization': `Token ${token}`,
+          // 'Content-Type': 'application/json',
+        },
+      });
+      if(response.status == 204){
+        localStorage.removeItem("authToken");
+        alert("deleted")
+        navigate("/")
+      }
+      console.log(response.data);
+    } catch (error) {
+      console.log("Failed to delete profile:", error.message);
+      setError("Failed to delete profile");
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -129,6 +154,13 @@ const Profile = () => {
           >
             <img src={assets.blog_icon} alt="" className="h-6" />
             Edit
+          </button>
+          <button
+            className="flex gap-x-2 mt-8 mx-auto border border-black px-6 py-2 text-center hover:shadow-[7px_-7px_0px_#000000]"
+            onClick={deletProfile}
+          >
+            <img src={assets.blog_icon} alt="" className="h-6" />
+            Delete
           </button>
         </>
       ) : (

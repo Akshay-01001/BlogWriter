@@ -49,6 +49,7 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        print(request.data)        
         django_logout(request)
         request.auth.delete()  
         return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
@@ -132,18 +133,6 @@ class CommentListView(APIView):
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class CommentDeleteView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, post_id, comment_id):
-        try:
-            comment = Comment.objects.get(id=comment_id, blog_post_id=post_id, author=request.user)
-            comment.delete()
-            return Response({'message': 'Comment deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
-        except Comment.DoesNotExist:
-            return Response({'error': 'Comment not found or not authorized to delete'}, status=status.HTTP_404_NOT_FOUND)
-
 class ProfileDeleteView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -152,8 +141,8 @@ class ProfileDeleteView(APIView):
         try:
             user_profile = UserProfile.objects.get(user=request.user)
             user_profile.delete()
-            request.user.delete()  # Also delete the user account
-            request.auth.delete()  # Delete the token
+            request.user.delete() 
+            request.auth.delete()
             return Response({'message': 'Profile deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
         except UserProfile.DoesNotExist:
             return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)

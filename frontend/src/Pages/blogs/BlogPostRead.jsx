@@ -62,7 +62,11 @@ const BlogPostRead = () => {
           width={1280}
           height={720}
         />
-        <h1 className="my-8 font-semibold text-xl">Introduction:</h1>
+
+        <h1 className="my-8 font-semibold text-xl">Description</h1>
+        <div>{parse(data.description)}</div>
+
+        <h1 className="my-8 font-semibold text-xl">Content</h1>
         <div>{parse(data.content)}</div>
 
         <div className="my-24">
@@ -89,7 +93,7 @@ const BlogPostRead = () => {
         </div>
       </div>
 
-      <Comment id={id}/>
+      <Comment id={id} />
       <Footer />
     </div>
   );
