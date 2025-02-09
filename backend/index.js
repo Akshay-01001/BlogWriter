@@ -10,6 +10,7 @@ import connectDB from "./utils/dbConnectio.js";
 import userRoute from "./routes/userRoute.js"
 import blogRoute from "./routes/blogRoute.js"
 import reactionROute from "./routes/reactionRoute.js"
+import commentRoute from "./routes/commentRoute.js"
 
 const app = express();
 app.use(
@@ -54,6 +55,9 @@ app.use("/api/blog",blogRoute)
 
 // reaction middleware
 app.use("/api/reaction",reactionROute)
+
+// comment middleware
+app.use("/api/comment",commentRoute)
 
 
 
