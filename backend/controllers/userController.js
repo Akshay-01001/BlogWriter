@@ -120,6 +120,7 @@ const loginUser = async (req, res, next) => {
       status: true,
       message: "Login Successfull",
       token,
+      user: existingUser,
     });
   } catch (error) {
     next(error);
@@ -149,16 +150,30 @@ const addProfilePic = async (req, res, next) => {
         .json({ success: false, message: "User not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Profile picture updated",
-        user: updatedUser,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Profile picture updated",
+      user: updatedUser,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-export { registerUser, loginUser, addProfilePic};
+const validateUser = async (req, res, next) => {
+  
+
+  try {
+    const token = req.cookies.token; // Corrected from req.cookie.token to req.cookies.token
+    if (!token) {
+      return res.status(402).json({ success: false, message: "Unauthorized user" });
+    }
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    return res.json({success : true,decoded ,message : "valid user"})
+  } catch (error) {
+    next(error)
+  }
+};
+
+
+export { registerUser, loginUser, addProfilePic, validateUser };

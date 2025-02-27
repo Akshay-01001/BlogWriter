@@ -65,7 +65,7 @@ const getAllBlogs = async (req, res, next) => {
     const blogs = await blogModel
       .find()
       .populate("user_id", "username email profile_pic");
-
+    
     if (blogs.length == 0) {
       return res
         .status(201)

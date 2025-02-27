@@ -31,6 +31,7 @@ app.use(
 app.use(express.json());
 configDotenv();
 app.use(cookieParser());
+app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 8000;
 
